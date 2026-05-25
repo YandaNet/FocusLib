@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusLib</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div id="sidebar">
+    <div class="logo">
+      <h1>FocusLib</h1>
+      <p>Система обліку книг</p>
+    </div>
+    <nav>
+      <a id="nav-books" class="active" onclick="showPage('books')"><img src="icons/books.png" alt=""> Книги</a>
+      <a id="nav-visitors" onclick="showPage('visitors')"><img src="icons/visitors.png" alt=""> Відвідувачі</a>
+      <a id="nav-issuance" onclick="showPage('issuance')"><img src="icons/issuance.png" alt=""> Картки видачі</a>
+      <a id="nav-stats" onclick="showPage('stats')"><img src="icons/stats.png" alt=""> Статистика</a>
+    </nav>
+  </div>
+
+  <div id="main"> <!-- КНИГИ -->
+    <div id="page-books" class="page active">
+      <div class="page-header">
+        <h2>Каталог книг</h2>
+        <p>Перегляд, додавання, редагування та видалення книг</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="val" id="stat-books-total">0</div>
+          <div class="lbl">Назва книг</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stat-books-copies">0</div>
+          <div class="lbl">Примірників</div>
+        </div>
+      </div>
+      <div class="section-row">
+        <h3>Список книг</h3>
+        <button id="btn-add-book" class="btn btn-primary">+ Додати книгу</button>
+      </div>
+      <div class="filter-bar">
+        <input id="book-search" type="text" placeholder="Пошук..." \>
+        <label>Сортування:</label>
+        <select id="book-sort">
+          <option value="title">За назвою</option>
+          <option value="author">За автором</option>
+          <option value="count">За к-стю примірників</option>
+        </select>
+        <select id="book-sort-dir">
+          <option value="asc">Від А до Я</option>
+          <option value="desc">Від Я до А</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable">Назва</th>
+              <th class="sortable">Автор</th>
+              <th>Видавництво</th>
+              <th>Рік</th>
+              <th>К-сть</th>
+              <th>Доступно</th>
+              <th>Дії</th>
+            </tr>
+          </thead>
+          <tbody id="books-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- ВІДВІДУВАЧІ  -->
+    <div id="page-visitors" class="page">
+      <div class="page-header">
+        <h2>Відвідувачі бібліотеки</h2>
+        <p>Реєстрація та управління читачами</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="val" id="stat-visitors-total">0</div>
+          <div class="lbl">Зареєстровано читачів</div>
+        </div>
+      </div>
+      <div class="section-row">
+        <h3>Список відвідувачів</h3>
+        <button id="btn-add-visitor" class="btn btn-primary">+ Додати відвідувача</button>
+      </div>
+      <div class="filter-bar">
+        <input id="visitor-search" type="text" placeholder="Пошук..." />
+        <label>Сортування:</label>
+        <select id="visitor-sort">
+          <option value="lastname">За прізвищем</option>
+          <option value="firstname">За іменем</option>
+        </select>
+        <select id="visitor-sort-dir">
+          <option value="asc">Від А до Я</option>
+          <option value="desc">Від Я до А</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable">ПІБ</th>
+              <th>Телефон</th>
+              <th>Адреса</th>
+              <th>Книг на руках</th>
+              <th>Дії</th>
+            </tr>
+          </thead>
+          <tbody id="visitors-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--  КАРТКИ ВИДАЧІ -->
+    <div id="page-issuance" class="page">
+      <div class="page-header">
+        <h2>Картки видачі</h2>
+        <p>Реєстрація видачі та повернення книг</p>
+      </div>
+      <div class="section-row">
+        <h3>Видачі</h3>
+        <button id="btn-issue-book" class="btn btn-primary">+ Видати книгу</button>
+      </div>
+
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Читач</th>
+              <th>Книга</th>
+              <th>Дата видачі</th>
+              <th>Повернути до</th>
+              <th>Статус</th>
+              <th>Дії</th>
+            </tr>
+          </thead>
+          <tbody id="issuance-tbody-active"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--  СТАТИСТИКА  -->
+    <div id="page-stats" class="page">
+      <div class="page-header">
+        <h2>Статистика бібліотеки</h2>
+        <p>Аналітика видачі книг та активності читачів</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="val" id="stats-books">0</div>
+          <div class="lbl">Книг у каталозі</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stats-visitors">0</div>
+          <div class="lbl">Читачів</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stats-issuances">0</div>
+          <div class="lbl">Видач всього</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stats-overdue">0</div>
+          <div class="lbl">Прострочених</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="chart-box">
+          <h3>Топ-5 найпопулярніших книг</h3>
+          <ul id="top-books-list" class="top-list"></ul>
+        </div>
+        <div class="chart-box">
+          <h3>Топ-5 найактивніших читачів</h3>
+          <ul id="top-visitors-list" class="top-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--  МОДАЛКИ  -->
+  <div id="book-modal" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn" onclick="closeModal('book-modal')">x</button>
+      <h3 id="book-modal-title">Додати книгу</h3>
+      <form id="book-form">
+        <div class="form-group">
+          <label>Назва </label>
+          <input id="b-title" type="text" placeholder="Назва книги">
+        </div>
+        <div class="form-group">
+          <label>Автор </label>
+          <input id="b-author" type="text" placeholder="Прізвище та ім'я автора">
+        </div>
+        <div class="form-group">
+          <label>Видавництво</label>
+          <input id="b-publisher" type="text" placeholder="Назва видавництва">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Рік видання </label>
+            <input id="b-year" type="number" placeholder="2024">
+          </div>
+          <div class="form-group">
+            <label>К-сть примірників </label>
+            <input id="b-count" type="number" placeholder="1" min="1">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('book-modal')">Скасувати</button>
+          <button type="submit" class="btn btn-primary">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+
+  <!-- Додати відвідувача -->
+  <div id="visitor-modal" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn" onclick="closeModal('visitor-modal')">x</button>
+      <h3 id="visitor-modal-title">Додати відвідувача</h3>
+      <form id="visitor-form">
+        <div class="form-group">
+          <label>Прізвище </label>
+          <input id="v-lastname" type="text" placeholder="Прізвище" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ім'я </label>
+            <input id="v-firstname" type="text" placeholder="Ім'я" />
+          </div>
+          <div class="form-group">
+            <label>По батькові </label>
+            <input id="v-middlename" type="text" placeholder="По батькові" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Телефон</label>
+          <input id="v-phone" type="tel" placeholder="+380 XX XXX-XX-XX" />
+        </div>
+        <div class="form-group">
+          <label>Адреса</label>
+          <input id="v-address" type="text" placeholder="вул. Назва, номер" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('visitor-modal')">Скасувати</button>
+          <button type="submit" class="btn btn-primary">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+
+  <!-- Видати книгу -->
+  <div id="issue-modal" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn" onclick="closeModal('issue-modal')">x</button>
+      <h3>Видати книгу читачу</h3>
+      <form id="issue-form">
+        <div class="form-group">
+          <label>Відвідувач </label>
+          <select id="issue-visitor">
+            <option value="">-- Оберіть читача --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Книга </label>
+          <select id="issue-book">
+            <option value="">-- Оберіть книгу --</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Дата видачі </label>
+            <input id="issue-date" type="date" />
+          </div>
+          <div class="form-group">
+            <label>Повернути до </label>
+            <input id="issue-due" type="date" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('issue-modal')">Скасувати</button>
+          <button type="submit" class="btn btn-primary">Підтвердити</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
