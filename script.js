@@ -5,11 +5,13 @@ let pages = document.querySelectorAll(".page");
 let navLinks = document.querySelectorAll("#sidebar nav a");
 
 function showPage(pageId) {
-  for (let i = 0; i < pages.length; i++) {
+  for (let i = 0; i < pages.length; i++)
+  {
     pages[i].classList.remove("active");
   }
 
-  for (let i = 0; i < navLinks.length; i++) {
+  for (let i = 0; i < navLinks.length; i++) 
+  {
     navLinks[i].classList.remove("active");
   }
   document.getElementById("page-" + pageId).classList.add("active");
@@ -26,10 +28,12 @@ showPage("books");
 
 //  МОДАЛКИ
 
-function openModal(modalId) {
+function openModal(modalId) 
+{
   document.getElementById(modalId).classList.add("open");
 }
-function closeModal(modalId) {
+function closeModal(modalId)
+{
   document.getElementById(modalId).classList.remove("open");
 }
 
@@ -130,7 +134,8 @@ bookForm.addEventListener("submit", function (event) {
 
 booksTable.addEventListener("click", function (event) {
 
-  if (event.target.classList.contains("delete-book")) {
+  if (event.target.classList.contains("delete-book")) 
+  {
     event.target.closest("tr").remove();
 
     let totalBooks = document.querySelectorAll("#books-tbody tr").length;
