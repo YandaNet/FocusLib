@@ -1,6 +1,6 @@
-//  СТОРІНКИ 
 
 
+let issuanceHistory = [];
 let pages = document.querySelectorAll(".page");
 let navLinks = document.querySelectorAll("#sidebar nav a");
 
@@ -20,6 +20,22 @@ function showPage(pageId) {
 showPage("books");
 
 
+
+document.getElementById("nav-books").addEventListener("click", function () {
+  showPage("books");
+});
+
+document.getElementById("nav-visitors").addEventListener("click", function () {
+  showPage("visitors");
+});
+
+document.getElementById("nav-issuance").addEventListener("click", function () {
+  showPage("issuance");
+});
+
+document.getElementById("nav-stats").addEventListener("click", function () {
+  showPage("stats");
+});
 
 
 
@@ -136,39 +152,57 @@ booksTable.addEventListener("click", function (event) {
 
   if (event.target.classList.contains("delete-book")) 
   {
-    event.target.closest("tr").remove();
+    let row = event.target.closest("tr");
 
+    let title = row.children[0].innerText;
+
+    // перевірка чи книга видана
+    let available = Number(
+      row.querySelector(".available").innerText
+    );
+
+    let total = Number(row.children[4].innerText);
+
+    if (available < total) {
+      alert("Не можна видалити книгу, поки її не повернуть!");
+      return;
+    }
+
+    // видаляємо option із select
+    let options = document.querySelectorAll("#issue-book option");
+
+    for (let i = 0; i < options.length; i++) {
+
+      if (options[i].value === title) {
+        options[i].remove();
+      }
+    }
+
+    // видаляємо рядок
+    row.remove();
+
+    // статистика
     let totalBooks = document.querySelectorAll("#books-tbody tr").length;
 
     document.getElementById("stat-books-total").innerText = totalBooks;
+
     document.getElementById("stats-books").innerText = totalBooks;
   }
 });
 
 
 // ВІДВІДУВАЧІ
-
 let visitorForm = document.getElementById("visitor-form");
-
 let visitorsTable = document.getElementById("visitors-tbody");
 
 visitorForm.addEventListener("submit", function (event) {
-
   event.preventDefault();
 
   let lastname = document.getElementById("v-lastname").value.trim();
-
   let firstname = document.getElementById("v-firstname").value.trim();
-
   let middlename = document.getElementById("v-middlename").value.trim();
-
   let phone = document.getElementById("v-phone").value.trim();
-
   let address = document.getElementById("v-address").value.trim();
-
-
-
-
 
   //  ПОМИЛКИ 
 
@@ -179,9 +213,8 @@ visitorForm.addEventListener("submit", function (event) {
 
   // ДОДАВАННЯ 
 
-  let fullName = lastname + " " + firstname;
-
-  let row = document.createElement("tr");
+  let fullName = lastname + " " + firstname + " " + middlename;
+    let row = document.createElement("tr");
 
   row.innerHTML = `
     <td>${lastname} ${firstname} ${middlename}</td>
@@ -223,13 +256,41 @@ visitorForm.addEventListener("submit", function (event) {
 });
 
 
+
 // ВИДАЛЕННЯ ЧИТАЧІВ
 
 visitorsTable.addEventListener("click", function (event) {
 
   if (event.target.classList.contains("delete-visitor")) {
-    event.target.closest("tr").remove();
 
+    let row = event.target.closest("tr");
+
+    // перевірка книг на руках
+    let hands = Number(
+      row.querySelector(".hands").innerText
+    );
+
+    if (hands > 0) {
+      alert("Не можна видалити читача, поки він не поверне книги!");
+      return;
+    }
+
+    let fullname = row.children[0].innerText;
+
+    // видаляємо option із select
+    let options = document.querySelectorAll("#issue-visitor option");
+
+    for (let i = 0; i < options.length; i++) {
+
+      if (options[i].value === fullname) {
+        options[i].remove();
+      }
+    }
+
+    // видаляємо рядок
+    row.remove();
+
+    // статистика
     let totalVisitors = document.querySelectorAll("#visitors-tbody tr").length;
 
     document.getElementById("stat-visitors-total").innerText = totalVisitors;
@@ -241,19 +302,20 @@ visitorsTable.addEventListener("click", function (event) {
 
 //  ПОШУК КНИГ 
 
-document
-  .getElementById("book-search")
-  .addEventListener("input", function () {
+document.getElementById("book-search").addEventListener("input", function () {
     let value = this.value.toLowerCase();
 
     let rows = document.querySelectorAll("#books-tbody tr");
 
-    for (let i = 0; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) 
+      {
       let text = rows[i].innerText.toLowerCase();
-      if (text.includes(value)) {
+      if (text.includes(value)) 
+      {
         rows[i].style.display = "";
       }
-      else {
+      else
+      {
         rows[i].style.display = "none";
       }
     }
@@ -394,6 +456,13 @@ issueForm.addEventListener("submit", function (event) {
     alert("Заповніть всі поля!");
     return;
   }
+  let issue = new Date(issueDate);
+  let due = new Date(dueDate);
+
+  if (due < issue) {
+    alert("Дата повернення не може бути раніше дати видачі!");
+    return;
+  }
 
 
 
@@ -457,12 +526,18 @@ issueForm.addEventListener("submit", function (event) {
 `;
 
   document.getElementById("issuance-tbody-active").appendChild(row);
+  issuanceHistory.push({
+    visitor: visitor,
+    book: book
+  });
 
   // СТАТИСТИКА
 
   let total = document.querySelectorAll("#issuance-tbody-active tr").length;
 
   document.getElementById("stats-issuances").innerText = total;
+  updateOverdueStats();
+  updateTopStats();
 
 
   issueForm.reset();
@@ -476,65 +551,64 @@ issueForm.addEventListener("submit", function (event) {
 // ПОВЕРНЕННЯ КНИГ
 
 issueTable.addEventListener("click", function (event) {
-  updateTopStats();
 
   if (event.target.classList.contains("return-book")) {
 
-  let row = event.target.closest("tr");
-  let visitor = row.children[0].innerText;
-  let book = row.children[1].innerText;
+    let row = event.target.closest("tr");
 
-  // повертаємо книгу в наявність
-  let books = document.querySelectorAll("#books-tbody tr");
+    let visitor = row.children[0].innerText;
 
-  for (let i = 0; i < books.length; i++) {
-    let title = books[i].children[0].innerText;
+    let book = row.children[1].innerText;
 
-    if (title === book) {
-      let available = Number(books[i].querySelector(".available").innerText);
-      books[i].querySelector(".available").innerText = available + 1;
+    // ПОВЕРТАЄМО КНИГУ
+    let books = document.querySelectorAll("#books-tbody tr");
+
+    for (let i = 0; i < books.length; i++) {
+
+      let title = books[i].children[0].innerText;
+
+      if (title === book) {
+
+        let available = Number(
+          books[i].querySelector(".available").innerText
+        );
+
+        books[i].querySelector(".available").innerText = available + 1;
+      }
     }
-  }
 
-  // мінус у читача
-  let visitors = document.querySelectorAll("#visitors-tbody tr");
+    // МІНУС КНИГА У ЧИТАЧА
+    let visitors = document.querySelectorAll("#visitors-tbody tr");
 
-  for (let i = 0; i < visitors.length; i++) {
-    let name = visitors[i].children[0].innerText;
+    for (let i = 0; i < visitors.length; i++) {
 
-    if (name.includes(visitor)) {
-      let hands = Number(visitors[i].querySelector(".hands").innerText);
-      visitors[i].querySelector(".hands").innerText = hands - 1;
+      let name = visitors[i].children[0].innerText;
+
+      if (name.includes(visitor)) {
+
+        let hands = Number(
+          visitors[i].querySelector(".hands").innerText
+        );
+
+        visitors[i].querySelector(".hands").innerText = hands - 1;
+      }
     }
-  }
 
-  // просто видаляємо рядок
-  row.remove();
+    // ВИДАЛЯЄМО РЯДОК
+    row.remove();
 
-  // статистика
-  let total = document.querySelectorAll("#issuance-tbody-active tr").length;
-  document.getElementById("stats-issuances").innerText = total;
-
-  updateTopStats();
-}
-
-
-    // В ІСТОРІЮ
-
-    document.getElementById("issuance-tbody-history").appendChild(row);
-
-    row.children[4].innerText = "Повернена";
-
-    row.children[5].remove();
-
-
-    // СТАТИСТИКА
-
-    let total = document.querySelectorAll("#issuance-tbody-active tr").length;
+    // ОНОВЛЕННЯ СТАТИСТИКИ
+    let total = document.querySelectorAll(
+      "#issuance-tbody-active tr"
+    ).length;
 
     document.getElementById("stats-issuances").innerText = total;
+
+    updateOverdueStats();
+
+    updateTopStats();
   }
-);
+});
 
 
 
@@ -550,13 +624,13 @@ function updateTopStats() {
   let books = [];
   let visitors = [];
 
-  let rows = document.querySelectorAll("#issuance-tbody-active tr");
+  let rows = issuanceHistory;
 
   // ЗБІР ДАНИХ
   for (let i = 0; i < rows.length; i++) {
 
-    let visitor = rows[i].children[0].innerText;
-    let book = rows[i].children[1].innerText;
+    let visitor = rows[i].visitor;
+    let book = rows[i].book;
 
     // ===== КНИГИ =====
     let foundBook = false;
@@ -632,3 +706,20 @@ function isOverdue(dueDate) {
 
   return due < today;
 }
+function updateOverdueStats() {
+
+  let rows = document.querySelectorAll("#issuance-tbody-active tr");
+
+  let overdue = 0;
+
+  for (let i = 0; i < rows.length; i++) {
+
+    let status = rows[i].querySelector(".status").innerText;
+
+    if (status === "Прострочена") {
+      overdue++;
+    }
+  }
+
+  document.getElementById("stats-overdue").innerText = overdue;
+} 
