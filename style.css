@@ -63,12 +63,7 @@ body {
   background: rgba(192, 57, 43, 0.2);
 }
 
-#sidebar .sidebar-footer {
-  padding: 16px 20px;
-  color: rgba(255, 255, 255, 0.25);
-  font-size: 11px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
+
 
 /* ===== MAIN ===== */
 #main {
@@ -128,11 +123,7 @@ body {
   color: #3E2A1E;
 }
 
-.stat-card .lbl {
-  font-size: 12px;
-  color: #6B5B4E;
-  margin-top: 4px;
-}
+
 
 /* ===== SECTION ROW ===== */
 .section-row {
@@ -142,9 +133,7 @@ body {
   margin-bottom: 14px;
 }
 
-.section-row h3 {
-  font-size: 16px;
-}
+
 
 /* ===== BUTTONS ===== */
 .btn {
@@ -170,28 +159,14 @@ body {
 }
 
 .btn-danger:hover {
-  background: #922b21;
+  background: #960c00;
 }
 
-.btn-success {
-  background: #5A8A5A;
-  color: #fff;
-}
 
-.btn-outline {
-  background: transparent;
-  color: #8B5E3C;
-  border: 1px solid #D4B896;
-}
 
-.btn-outline:hover {
-  background: #EFE7D9;
-}
 
-.btn-sm {
-  padding: 5px 12px;
-  font-size: 13px;
-}
+
+
 
 /* ===== FILTER BAR ===== */
 .filter-bar {
@@ -205,7 +180,17 @@ body {
   margin-bottom: 16px;
 }
 
-.filter-bar input, .filter-bar select {
+.filter-bar input  {
+  border: 1px solid #D4B896;
+  border-radius: 5px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  color: #3E2A1E;
+  background: #FAF6F0;
+}
+
+.filter-bar select {
   border: 1px solid #D4B896;
   border-radius: 5px;
   padding: 7px 12px;
@@ -229,7 +214,7 @@ body {
   background: #fff;
   border: 1px solid #D9C9B5;
   border-radius: 6px;
-  overflow: hidden;
+  
 }
 
 table {
@@ -249,18 +234,10 @@ thead th {
 }
 
 
-
-thead th.sortable:hover {
-  color: #3E2A1E;
-}
-
 tbody tr {
   border-bottom: 1px solid #EFE7D9;
 }
 
-tbody tr:last-child {
-  border-bottom: none;
-}
 
 tbody tr:hover {
   background: #FAF6F0;
@@ -271,35 +248,12 @@ tbody td {
   font-size: 14px;
 }
 
-.actions {
-  display: flex;
-  gap: 6px;
-}
 
-/* ===== BADGE ===== */
-.badge {
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-}
 
-.badge-green {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
 
-.badge-red {
-  background: #ffebee;
-  color: #c62828;
-}
 
-.badge-tan {
-  background: #EFE7D9;
-  color: #8B5E3C;
-}
 
-/* ===== PAGINATION ===== */
+/* ===== PAGINATION =====
 .pagination {
   display: flex;
   align-items: center;
@@ -315,10 +269,10 @@ tbody td {
 .pagination .pages {
   display: flex;
   gap: 5px;
-}
+} */
 
 /* ===== TABS ===== */
-.tabs {
+/* .tabs {
   display: flex;
   border-bottom: 2px solid #D9C9B5;
   margin-bottom: 18px;
@@ -348,7 +302,7 @@ tbody td {
 
 .tab-content.active {
   display: block;
-}
+} */
 
 /* ===== MODAL ===== */
 .modal-overlay {
