@@ -164,7 +164,7 @@ booksTable.addEventListener("click", function (event) {
     let total = Number(row.children[4].innerText);
 
     if (available < total) {
-      alert("Не можна видалити книгу, поки її не повернуть!");
+      alert("Не можна видалити книгу поки її не повернуть!");
       return;
     }
 
@@ -271,7 +271,7 @@ visitorsTable.addEventListener("click", function (event) {
     );
 
     if (hands > 0) {
-      alert("Не можна видалити читача, поки він не поверне книги!");
+      alert("Не можна видалити читача поки він не поверне книги!");
       return;
     }
 
